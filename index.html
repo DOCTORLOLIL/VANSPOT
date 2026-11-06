@@ -137,6 +137,31 @@ h2{font-size:clamp(28px,4vw,42px);font-weight:800;max-width:20em}
 .disclaimer ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px;color:var(--muted)}
 .back{display:inline-block;font-weight:700;text-decoration:none;color:var(--brand-text);margin-top:10px}
 
+
+/* download page */
+.dl-hero{margin-top:26px;background:var(--brand);color:#fff;border-radius:28px;padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;position:relative;overflow:hidden}
+.dl-hero h2{color:#fff;max-width:16em}
+.dl-hero p{color:#D6EBE4;max-width:34em}
+.dl-btn{position:relative;display:inline-flex;align-items:center;gap:14px;background:var(--orange);color:var(--orange-ink);font:inherit;font-weight:800;font-size:clamp(24px,5vw,34px);padding:22px 44px;border-radius:22px;border:0;cursor:pointer;text-decoration:none;box-shadow:0 10px 0 #B85F00,0 22px 40px -12px rgba(0,0,0,.5);transition:transform .12s,box-shadow .12s}
+.dl-btn:hover{transform:translateY(2px);box-shadow:0 8px 0 #B85F00,0 18px 34px -12px rgba(0,0,0,.5)}
+.dl-btn:active{transform:translateY(8px);box-shadow:0 2px 0 #B85F00,0 8px 16px -8px rgba(0,0,0,.5)}
+.dl-btn svg{width:34px;height:34px}
+.dl-btn[aria-disabled="true"]{background:#C9BFAB;box-shadow:0 10px 0 #9C927D;cursor:default;color:#4a4636}
+.dl-meta{display:flex;gap:10px 22px;flex-wrap:wrap;justify-content:center;color:#BFDDD3;font-size:15px}
+.dl-meta b{color:#fff}
+.hash{direction:ltr;unicode-bidi:plaintext;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;word-break:break-all;color:#BFDDD3;max-width:100%}
+.warn{margin-top:26px;border:2px solid var(--s-amber);border-radius:var(--r);background:var(--surface);padding:22px 24px}
+.warn h2{font-size:21px;margin-bottom:10px}
+.warn ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px;color:var(--muted)}
+.steps{margin:26px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.steps li{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:6px}
+.steps b{font-size:19px}
+.steps span{color:var(--muted);font-size:15.5px}
+.conf{position:fixed;top:-12px;width:10px;height:16px;border-radius:2px;pointer-events:none;z-index:50;animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translate(var(--dx),105vh) rotate(var(--rot));opacity:.9}}
+@media (max-width:860px){.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.conf{display:none}}
+
 footer{padding-block:40px 56px;color:var(--muted);font-size:14px;border-top:1.5px solid var(--line);margin-top:30px;display:flex;flex-direction:column;gap:12px}
 footer .links{display:flex;gap:16px;flex-wrap:wrap}
 footer a{font-weight:700;text-decoration:none;color:var(--fg)}
@@ -165,6 +190,7 @@ footer a{font-weight:700;text-decoration:none;color:var(--fg)}
     <nav class="main" aria-label="Main">
       <a href="#how" data-k="nav_how"></a>
       <a href="#beta" data-k="nav_beta"></a>
+      <a href="#download" data-k="nav_dl"></a>
       <a href="#support" data-k="nav_support"></a>
       <button class="lang" id="langBtn" type="button" aria-label="Language"></button>
     </nav>
@@ -281,7 +307,7 @@ footer a{font-weight:700;text-decoration:none;color:var(--fg)}
         <div>
           <h2 id="beta-h" data-k="beta_h"></h2>
           <p data-k="beta_p"></p>
-          <div class="stores"><span class="chip" data-k="chip_android"></span><span class="chip" data-k="chip_store"></span></div>
+          <div class="stores"><span class="chip" data-k="chip_android"></span><span class="chip" data-k="chip_store"></span><a class="chip" href="#download" data-k="chip_apk"></a></div>
         </div>
         <a class="btn btn-dark" id="waBtn2" href="#beta" data-k="cta_beta"></a>
       </div>
@@ -321,8 +347,35 @@ footer a{font-weight:700;text-decoration:none;color:var(--fg)}
     </div>
   </main>
 
+
+  <!-- DOWNLOAD -->
+  <main id="view-download" data-view="download" class="page" hidden>
+    <a class="back" href="#home" data-k="back"></a>
+    <div class="dl-hero">
+      <div class="eyebrow" data-k="dl_eyebrow"></div>
+      <h2 data-k="dl_h"></h2>
+      <p data-k="dl_p"></p>
+      <a class="dl-btn" id="dlBtn" href="#download" aria-disabled="true">
+        <svg viewBox="0 0 34 34" aria-hidden="true"><path d="M17 4v16m0 0-7-7m7 7 7-7M6 27h22" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="dlLabel"></span>
+      </a>
+      <div class="dl-meta" id="dlMeta"></div>
+      <div class="hash" id="dlHash"></div>
+    </div>
+    <div class="warn">
+      <h2 data-k="w_h"></h2>
+      <ul><li data-k="w1"></li><li data-k="w2"></li><li data-k="w3"></li><li data-k="w4"></li><li data-k="w5"></li></ul>
+    </div>
+    <ol class="steps">
+      <li><b data-k="st1_h"></b><span data-k="st1_p"></span></li>
+      <li><b data-k="st2_h"></b><span data-k="st2_p"></span></li>
+      <li><b data-k="st3_h"></b><span data-k="st3_p"></span></li>
+    </ol>
+  </main>
+
   <footer>
     <div class="links">
+      <a href="#download" data-k="nav_dl"></a>
       <a href="#support" data-k="nav_support"></a>
       <a href="#support" data-k="f_legal"></a>
     </div>
@@ -337,6 +390,9 @@ footer a{font-weight:700;text-decoration:none;color:var(--fg)}
 var CFG={
   WHATSAPP_URL:'https://chat.whatsapp.com/FGFL6Z71X1eAK4qbRZFYYx',            // beta WhatsApp group invite link, e.g. https://chat.whatsapp.com/XXXX
   SUPPORT_EMAIL:'1312shen@gmail.com',           // support address, shown as text
+  APK:{                       // filled in when a build is uploaded, leave url empty until then
+    url:'', version:'', date:'', size:'', sha256:''
+  },
   LAUNCH_WINK:'2026-11-19',   // the date used in the countdown strip
   LEGAL:{                     // set each to a real page when ready, e.g. 'legal/privacy-he.html'
     privacy_he:'', privacy_en:'', terms_he:'', terms_en:''
@@ -345,7 +401,11 @@ var CFG={
 
 var T={
 he:{
- nav_how:'איך זה עובד', nav_beta:'ביתא', nav_support:'תמיכה',
+ nav_how:'איך זה עובד', nav_beta:'ביתא', nav_support:'תמיכה', nav_dl:'הורדה', chip_apk:'הורדת גרסת בדיקה',
+ dl_eyebrow:'גרסת בדיקה · אנדרואיד', dl_h:'הגרסה האחרונה של VanSpot, ישר אליכם', dl_p:'מורידים, מתקינים ויוצאים לדרך. הגרסה נמצאת בפיתוח, ואנחנו מעדכנים אותה כל הזמן לפי מה שאתם מדווחים.',
+ dl_btn:'הורדה', dl_soon:'הגרסה הראשונה בקרוב', dl_ver:'גרסה', dl_date:'עודכן', dl_size:'גודל', dl_sha:'SHA-256:',
+ w_h:'לפני שמורידים: גרסה בעבודה', w1:'זו גרסת בדיקה בפיתוח. ייתכנו תקלות, שינויים בלי הודעה, ואובדן נתונים שהוזנו בה.', w2:'ההורדה, ההתקנה והשימוש הם על אחריותכם בלבד.', w3:'הקובץ מחוץ ל-Google Play. אנדרואיד עשוי להציג אזהרה על התקנה ממקור לא מוכר, ו-Play Protect עשוי להזהיר כי האפליקציה טרם נבדקה בחנות.', w4:'הורידו רק מהדף הזה. אפשר להשוות את קוד ה-SHA-256 שמופיע למעלה לקובץ שהורדתם.', w5:'האפליקציה פועלת בישראל בלבד.',
+ st1_h:'הורדה', st1_p:'לוחצים על הכפתור ומורידים את קובץ ה-APK לטלפון.', st2_h:'אישור התקנה', st2_p:'פותחים את הקובץ ומאשרים התקנה מהדפדפן כשאנדרואיד מבקש.', st3_h:'פותחים ויוצאים', st3_p:'נרשמים, מאשרים הרשאות מיקום, ורואים את המפה. בעיה? כתבו לנו בקבוצה.',
  eyebrow:'קהילה · ישראל · רכב שינה',
  h1:'איפה ישנים הלילה? שואלים את הקהילה.',
  lead:'VanSpot היא מפה קהילתית שמראה למי שיוצא לדרך ברכב שינה איפה אפשר ללון, איפה רק לעצור, ואיפה כדאי להמשיך הלאה. נבנתה בישראל, בשביל ישראלים.',
@@ -385,7 +445,11 @@ he:{
  f_legal:'משפטי', f_disc:'המידע באפליקציה נמסר על ידי הקהילה ואינו ייעוץ משפטי. אין לראות בו אישור ללון במקום כלשהו.'
 },
 en:{
- nav_how:'How it works', nav_beta:'Beta', nav_support:'Support',
+ nav_how:'How it works', nav_beta:'Beta', nav_support:'Support', nav_dl:'Download', chip_apk:'Download the test build',
+ dl_eyebrow:'Test build · Android', dl_h:'The latest VanSpot, straight to you', dl_p:'Download, install and hit the road. This build is in development and we update it constantly based on what you report.',
+ dl_btn:'Download', dl_soon:'First build coming soon', dl_ver:'Version', dl_date:'Updated', dl_size:'Size', dl_sha:'SHA-256:',
+ w_h:'Before you download: work in progress', w1:'This is a test build in development. Expect bugs, changes without notice and possible loss of data entered in it.', w2:'Downloading, installing and using it is at your own risk.', w3:'The file is outside Google Play. Android may warn about installing from an unknown source, and Play Protect may warn that the app has not been reviewed by the store.', w4:'Download only from this page. You can compare the SHA-256 code shown above with the file you downloaded.', w5:'The app works in Israel only.',
+ st1_h:'Download', st1_p:'Tap the button and download the APK file to your phone.', st2_h:'Allow the install', st2_p:'Open the file and approve the install from your browser when Android asks.', st3_h:'Open and go', st3_p:'Sign up, allow location, and see the map. Problem? Tell us in the group.',
  eyebrow:'Community · Israel · Sleeper vehicles',
  h1:'Where are you sleeping tonight? Ask the community.',
  lead:'VanSpot is a community map that shows people on the road in vans and campers where they can sleep, where they can only stop, and where to keep driving. Built in Israel, for Israelis.',
@@ -446,6 +510,16 @@ function applyLang(){
 }
 function setLinks(){
   var d=T[lang];
+  var A=CFG.APK, btn=document.getElementById('dlBtn'), meta=document.getElementById('dlMeta');
+  document.getElementById('dlLabel').textContent=A.url?d.dl_btn:d.dl_soon;
+  if(A.url){btn.href=A.url;btn.setAttribute('download','');btn.removeAttribute('aria-disabled');}
+  else{btn.setAttribute('aria-disabled','true');btn.href='#download';}
+  var parts=[];
+  if(A.version)parts.push(d.dl_ver+': <b>'+A.version+'</b>');
+  if(A.date)parts.push(d.dl_date+': <b>'+A.date+'</b>');
+  if(A.size)parts.push(d.dl_size+': <b>'+A.size+'</b>');
+  meta.innerHTML=parts.join(' ');
+  document.getElementById('dlHash').textContent=A.sha256?(d.dl_sha+' '+A.sha256):'';
   ['waBtn','waBtn2'].forEach(function(id){
     var a=document.getElementById(id); if(!a) return;
     if(CFG.WHATSAPP_URL){a.href=CFG.WHATSAPP_URL;a.target='_blank';a.rel='noopener'}
@@ -461,6 +535,16 @@ function setLinks(){
     box.appendChild(a);
   });
 }
+document.getElementById('dlBtn').addEventListener('click',function(e){
+  if(this.getAttribute('aria-disabled')==='true'){e.preventDefault();return;}
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var cols=['#FF8A00','#F5EFE4','#2E9E5B','#F5A300','#FFFFFF'];
+  for(var i=0;i<46;i++){var c=document.createElement('span');c.className='conf';
+    c.style.left=(Math.random()*100)+'vw';c.style.background=cols[i%cols.length];
+    c.style.setProperty('--dx',((Math.random()-.5)*240)+'px');c.style.setProperty('--rot',(Math.random()*720)+'deg');
+    c.style.animationDelay=(Math.random()*.4)+'s';document.body.appendChild(c);
+    (function(n){setTimeout(function(){n.remove()},2400)})(c);}
+});
 document.getElementById('langBtn').addEventListener('click',function(){lang=lang==='he'?'en':'he';safeSet('vs_lang',lang);applyLang();});
 document.getElementById('copyBtn').addEventListener('click',function(){
   var b=this,t=T[lang];
@@ -469,10 +553,11 @@ document.getElementById('copyBtn').addEventListener('click',function(){
 });
 
 /* views via hash: home (default), support. Other hashes scroll to a section on home. */
-var views=['home','support'];
+var views=['home','support','download'];
 function route(){
   var h=(location.hash||'').slice(1), show='home', anchor=null;
   if(h==='support') show='support';
+  else if(h==='download') show='download';
   else if(h&&h!=='home') anchor=h;
   views.forEach(function(v){document.getElementById('view-'+v).hidden=(v!==show)});
   if(anchor){var el=document.getElementById(anchor); if(el){el.scrollIntoView({behavior:'smooth',block:'start'});return;}}
