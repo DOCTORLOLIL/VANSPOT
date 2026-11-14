@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VanSpot · טיול</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+:root{--bg:#F1F6F3;--fg:#1F2937;--muted:#566070;--line:#DDD3C0;--brand:#075B4B;--orange:#FF8A00;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1C19;--fg:#F3EEE3;--muted:#A8B7B1;--line:#27463F;--card:#15302A}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Heebo',system-ui,sans-serif;line-height:1.5}
+header{background:var(--brand);color:#fff;padding:14px 16px;font-weight:900;font-size:19px;display:flex;justify-content:space-between;align-items:center}
+header span{font-size:13px;font-weight:700;opacity:.9}
+#map{height:240px;background:#E4EDE2}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{margin:0 0 4px;font-size:24px;font-weight:900}
+h2{margin:18px 0 8px;font-size:16px;font-weight:900;color:var(--brand)}
+@media (prefers-color-scheme:dark){h2{color:#5FD3B6}}
+.stop{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}
+.stop div.t{flex:1}
+.stop b{display:block}
+.stop small{color:var(--muted)}
+.stop a{background:var(--brand);color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.cta{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center}
+.cta a{display:inline-block;margin-top:8px;background:var(--orange);color:#1F2937;font-weight:900;text-decoration:none;padding:12px 22px;border-radius:999px}
+#msg{padding:40px 16px;text-align:center;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+</style>
+</head>
+<body>
+<header>VanSpot <span>טיול משותף</span></header>
+<div id="map" hidden></div>
+<main>
+<div id="msg">טוען…</div>
+<div id="trip" hidden>
+<h1 id="title"></h1>
+<div id="days"></div>
+<div class="cta"><div>רוצים לראות את כל הספוטים ולהצביע? התקינו את VanSpot.</div><a href="/">לאתר VanSpot</a></div>
+<p class="note">המסלול מתוכנן על ידי משתמש. בדקו תנאי דרך ומזג אוויר לפני היציאה.</p>
+</div>
+</main>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+(function(){
+var URL_='https://xxwjsleufuyzvagwotfr.supabase.co/rest/v1/rpc/trip_public';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4d2pzbGV1ZnV5enZhZ3dvdGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMjI5NDgsImV4cCI6MjEwODg5ODk0OH0.nTEipEIdgR3LvaQwWfwL-dHAA78imC_SLIFdYfL-D94';
+var TYPES={parking:'חניה',beach:'חוף',campsite:'קמפינג',rest_stop:'עצירת דרך',viewpoint:'נקודת תצפית',water:'תחנת מים',dump:'שפיכת שירותים',gas:'מילוי גז',laundry:'מכבסה',shower:'מקלחת',power:'עמדת חשמל'};
+var code=(new URLSearchParams(location.search).get('c')||'').replace(/[^a-z0-9]/gi,'').slice(0,16);
+var msg=document.getElementById('msg');
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+if(!code){msg.textContent='קישור לא תקין.';return}
+fetch(URL_,{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'},body:JSON.stringify({p_code:code})})
+.then(function(r){return r.json()}).then(function(d){
+ if(!d||!d.title){msg.textContent='הטיול לא נמצא או שנמחק.';return}
+ msg.hidden=true;document.getElementById('trip').hidden=false;
+ document.title='VanSpot · '+d.title;document.getElementById('title').textContent=d.title;
+ var stops=d.stops||[],byDay={};
+ stops.forEach(function(s){(byDay[s.day]=byDay[s.day]||[]).push(s)});
+ var box=document.getElementById('days'),i=0;
+ Object.keys(byDay).sort(function(a,b){return a-b}).forEach(function(day){
+  box.appendChild(el('h2',null,'יום '+day));
+  byDay[day].forEach(function(s,k){
+   i++;var row=el('div','stop');row.appendChild(el('div','n',String(k+1)));
+   var t=el('div','t');t.appendChild(el('b',null,s.name));
+   t.appendChild(el('small',null,[TYPES[s.place_type]||'',s.note||''].filter(Boolean).join(' · ')));
+   row.appendChild(t);
+   var a=el('a',null,'Waze');a.href='https://waze.com/ul?ll='+s.lat+','+s.lng+'&navigate=yes';a.target='_blank';a.rel='noopener';
+   row.appendChild(a);box.appendChild(row)});
+ });
+ if(!stops.length){box.appendChild(el('p',null,'עוד אין עצירות בטיול הזה.'));return}
+ try{
+  var m=document.getElementById('map');m.hidden=false;
+  var map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/liberty',center:[stops[0].lng,stops[0].lat],zoom:8,attributionControl:true});
+  var b=new maplibregl.LngLatBounds();
+  stops.forEach(function(s,idx){var d=el('div',null,String(idx+1));
+   d.style.cssText='width:26px;height:26px;border-radius:50%;background:#075B4B;color:#fff;font:900 13px Heebo,sans-serif;display:flex;align-items:center;justify-content:center;border:2px solid #fff';
+   new maplibregl.Marker({element:d}).setLngLat([s.lng,s.lat]).addTo(map);b.extend([s.lng,s.lat])});
+  map.on('load',function(){
+   map.addSource('r',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:stops.map(function(s){return[s.lng,s.lat]})}}});
+   map.addLayer({id:'r',type:'line',source:'r',paint:{'line-color':'#075B4B','line-width':3,'line-dasharray':[2,2]}});
+  });
+  if(stops.length>1)map.fitBounds(b,{padding:40,maxZoom:13,duration:0});
+ }catch(e){}
+}).catch(function(){msg.textContent='לא הצלחנו לטעון את הטיול. נסו שוב.'});
+})();
+</script>
+</body>
+</html>
